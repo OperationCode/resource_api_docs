@@ -1,9 +1,11 @@
 openapi: 3.0.1
+
 servers:
 - url: https://resources.operationcode.org/api/v1
   description: Default Server
 info:
   title: Operation Code Resources API
+  version: "1.0"
   description: |
     # Introduction
     Operation Code Resources API is a collection of programming and cyber security learning resources curated by and for the Operation Code community.
@@ -12,15 +14,16 @@ info:
     Create (POST) and update (PUT) routes are protected and require an API key. API key requests to the `/apikey` endpoint require valid Operation Code credentials in the request body. 
     
     If you are not already a member of our community, join Operation Code [HERE](https://https://operationcode.org/join).
-    
-    When you create a request to an authenticated route, you must include the header `x-apikey: yourapikey`
 
-    Example curl request to an authenticated route:
-    ```bash
+    When you create a request to an authenticated route, you *MUST* include the header `x-apikey` along with your API key.
+
+    Example curl request to an authenticated route
+    ~~~~
+    bash
     curl -X POST \
       http://resources.operationcode.org/api/v1/resources \
-      -H 'Content-Type: application/json' \
-      -H 'x-apikey: 0a14f702da134390ae43f3639686fe26' \
+      '-H \''Content-Type: application/json' \
+      '-H \''x-apikey: 0a14f702da134390ae43f3639686fe26' \
       -d '{
             "category": "Regular Expressions",
             "languages": ["Regex"],
@@ -28,12 +31,12 @@ info:
             "notes": "Regular Expression tester",
             "paid": false,
             "url": "https://regex101.com/"
-          }'```
-
+          \}'
+    ~~~~
   contact:
     name: Operation Code
     url: https://operationcode.org/contact
-  version: "1.0"
+
 paths:
   /apikey:
     post:
@@ -44,6 +47,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ApiKeyRequest'
+        required: true
       responses:
         200:
           description: API Key response
@@ -57,18 +61,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          examples:
-            0:
-              value: |
-                {
-                  "apiVersion": "1.0",
-                  "data": null,
-                  "errors": [
-                    "Invalid username or password"
-                  ],
-                  "status": "Unauthorized",
-                  "status_code": 401
-                }
+              examples:
+                0:
+                  value: |
+                    {
+                      "apiVersion": "1.0",
+                      "data": null,
+                      "errors": [
+                        "Invalid username or password"
+                      ],
+                      "status": "Unauthorized",
+                      "status_code": 401
+                    }
   /categories:
     get:
       summary: CATEGORIES
@@ -219,6 +223,12 @@ paths:
       - name: vote_direction
         in: path
         description: Number of upvotes or downvotes given to a particular resource
+        required: true
+        schema:
+          type: string
+          enum:
+            - upvote
+            - downvote
       responses:
         200:
           description: A specific resource's upvote or downvote details
@@ -241,8 +251,6 @@ paths:
     get:
       summary: RETRIEVE RESOURCES
       description: Gets list of all available resource entries or filtered entries based on provided criteria.
-      parameters:
-        name: 
       responses:
         200:
           description: A list of all resources
@@ -311,7 +319,7 @@ components:
         apiVersion: 
           type: string
         data: 
-          type: null
+          type: object
         errors: 
           type: string
         status: 
@@ -354,7 +362,7 @@ components:
         total_count:
           type: integer
     Category_data:
-      type: list
+      type: array
       items:
         type: object
         properties:
@@ -413,7 +421,6 @@ components:
       properties:
         category:
           type: string
-          required: true
         created_at:
           type: string
         downvotes:
@@ -428,19 +435,17 @@ components:
             type: string
         name:
           type: string
-          required: true
         notes:
           type: string
         paid:
           type: boolean
-          required: true
         times_clicked:
           type: integer
         upvotes:
           type: integer
         url:
           type: string
-          required: true
+      required: [category, name, paid, url]
     ApiKeyRequest_data:
       type: object
       properties:
@@ -454,11 +459,11 @@ components:
         apikey:
           type: string
         created_at:
-          type: timestamp
+          type: string
         email:
           type: string
         last_updated:
-          type: timestamp
+          type: string
   responses:
     NotFound:
       description: The specified resource was not found
@@ -474,7 +479,7 @@ components:
             $ref: '#/components/schemas/Error'
   securitySchemes:
     ApiKeyAuth:
-      description: 
+      description: API Key Authentication
       type: apiKey
       name: x-apikey
       in: header
