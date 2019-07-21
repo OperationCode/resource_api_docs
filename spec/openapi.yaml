@@ -1,44 +1,164 @@
 openapi: 3.0.1
+servers:
+- url: https://resources.operationcode.org/api/v1
+  description: Default Server
 info:
   title: Operation Code Resources API
-  description: A collection of programming and cyber security learning resources for
-    the Operation Code community.
+  description: |
+    # Introduction
+    Operation Code Resources API is a collection of programming and cyber security learning resources curated by and for the Operation Code community.
+
+    # Authentication
+    Create (POST) and update (PUT) routes are protected and require an API key. API key requests to the `/apikey` endpoint require valid Operation Code credentials in the request body. 
+    
+    If you are not already a member of our community, join Operation Code [HERE](https://https://operationcode.org/join).
+    
+    When you create a request to an authenticated route, you must include the header `x-apikey: yourapikey`
+
+    Example curl request to an authenticated route:
+    ```bash
+    curl -X POST \
+      http://resources.operationcode.org/api/v1/resources \
+      -H 'Content-Type: application/json' \
+      -H 'x-apikey: 0a14f702da134390ae43f3639686fe26' \
+      -d '{
+            "category": "Regular Expressions",
+            "languages": ["Regex"],
+            "name": "Regex101",
+            "notes": "Regular Expression tester",
+            "paid": false,
+            "url": "https://regex101.com/"
+          }'```
+
   contact:
     name: Operation Code
     url: https://operationcode.org/contact
-  version: "0.1"
-servers:
-- url: https://resources.operationcode.org/api/v1
+  version: "1.0"
 paths:
+  /apikey:
+    post:
+      summary: API KEY REQUEST
+      description: Request API key by providing valid Operation Code credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiKeyRequest'
+      responses:
+        200:
+          description: API Key response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyResponse'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          examples:
+            0:
+              value: |
+                {
+                  "apiVersion": "1.0",
+                  "data": null,
+                  "errors": [
+                    "Invalid username or password"
+                  ],
+                  "status": "Unauthorized",
+                  "status_code": 401
+                }
   /categories:
     get:
+      summary: CATEGORIES
       description: Gets a list of all available resource categories, such as books,
         tutorials, and coding challenges.
       responses:
         200:
+          description: A resource list
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                $ref: '#/components/schemas/Category'
               examples:
                 0:
                   value: |
-                    {"apiVersion":"1.0","data":[{"id":1,"name":"Books"},{"id":2,"name":"Code Challenges"},{"id":3,"name":"Getting Started"},{"id":4,"name":"Tutorials"},{"id":5,"name":"Online Courses"},{"id":6,"name":"Jobs"},{"id":7,"name":"Tools"},{"id":8,"name":"Programming for Kids"},{"id":9,"name":"REPL/Code Simulators"},{"id":10,"name":"Design"},{"id":11,"name":"Computer Hardware"},{"id":12,"name":"Computer Networking"},{"id":13,"name":"Cloud IDEs"},{"id":14,"name":"Docker"},{"id":15,"name":"Regular Expressions"},{"id":16,"name":"Mentorship"},{"id":17,"name":"News"},{"id":18,"name":"Back End Dev"},{"id":19,"name":"Mobile Dev"},{"id":20,"name":"Cheat Sheets"}],"has_next":true,"has_prev":false,"number_of_pages":4,"page":1,"records_per_page":20,"status":"ok","status_code":200,"total_count":72}
+                    {
+                      "apiVersion":"1.0",
+                      "data":[
+                        {"id":1,"name":"Books"},
+                        {"id":2,"name":"Code Challenges"},
+                        {"id":3,"name":"Getting Started"},
+                        {"id":4,"name":"Tutorials"},
+                        {"id":5,"name":"Online Courses"},
+                        {"id":6,"name":"Jobs"},
+                        {"id":7,"name":"Tools"},
+                        {"id":8,"name":"Programming for Kids"},{"id":9,"name":"REPL/Code Simulators"},{"id":10,"name":"Design"},
+                        {"id":11,"name":"Computer Hardware"},{"id":12,"name":"Computer Networking"},{"id":13,"name":"Cloud IDEs"},
+                        {"id":14,"name":"Docker"},
+                        {"id":15,"name":"Regular Expressions"},{"id":16,"name":"Mentorship"},
+                        {"id":17,"name":"News"},
+                        {"id":18,"name":"Back End Dev"},
+                        {"id":19,"name":"Mobile Dev"},
+                        {"id":20,"name":"Cheat Sheets"}],
+                      "has_next":true,
+                      "has_prev":false,
+                      "number_of_pages":4,
+                      "page":1,
+                      "records_per_page":20,
+                      "status":"ok",
+                      "status_code":200,
+                      "total_count":72
+                    }
   /languages:
     get:
-      description: Gets list of all languages and topics available
+      summary: LANGUAGES
+      description: Gets list of all languages and topics available such as Python, SQL, and Artificial Intelligence
       responses:
         200:
+          description: A language list
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                $ref: '#/components/schemas/Language'
               examples:
                 0:
                   value: |
-                    {"apiVersion":"1.0","data":[{"id":1,"name":"multiple"},{"id":2,"name":"Python"},{"id":3,"name":"Unix/Linux/*nix"},{"id":4,"name":"Bash"},{"id":5,"name":"C"},{"id":6,"name":"Sysadmin"},{"id":7,"name":"JavaScript"},{"id":8,"name":"HTML"},{"id":9,"name":"PHP"},{"id":10,"name":"Ruby"},{"id":11,"name":"Aspectwerkz"},{"id":12,"name":"Artificial Intelligence"},{"id":13,"name":"C++"},{"id":14,"name":"MongoDB"},{"id":15,"name":"SQL"},{"id":16,"name":"R"},{"id":17,"name":"GraphQL"},{"id":18,"name":"Swift"},{"id":19,"name":"Android"},{"id":20,"name":"CSS"}],"has_next":true,"has_prev":false,"number_of_pages":4,"page":1,"records_per_page":20,"status":"ok","status_code":200,"total_count":73}
+                    {
+                      "apiVersion":"1.0",
+                      "data":[
+                        {"id":1,"name":"multiple"},
+                        {"id":2,"name":"Python"},
+                        {"id":3,"name":"Unix/Linux/*nix"},
+                        {"id":4,"name":"Bash"},
+                        {"id":5,"name":"C"},
+                        {"id":6,"name":"Sysadmin"},
+                        {"id":7,"name":"JavaScript"},
+                        {"id":8,"name":"HTML"},
+                        {"id":9,"name":"PHP"},
+                        {"id":10,"name":"Ruby"},
+                        {"id":11,"name":"Aspectwerkz"},
+                        {"id":12,"name":"Artificial Intelligence"},{"id":13,"name":"C++"},
+                        {"id":14,"name":"MongoDB"},
+                        {"id":15,"name":"SQL"},
+                        {"id":16,"name":"R"},
+                        {"id":17,"name":"GraphQL"},
+                        {"id":18,"name":"Swift"},
+                        {"id":19,"name":"Android"},
+                        {"id":20,"name":"CSS"}],
+                      "has_next":true,
+                      "has_prev":false,
+                      "number_of_pages":4,
+                      "page":1,
+                      "records_per_page":20,
+                      "status":"ok",
+                      "status_code":200,
+                      "total_count":73
+                    }
   /resources/{id}:
     get:
+      summary: RESOURCE DETAILS BY ID
       description: Gets more details about a specific resource, given the resource
         ID
       parameters:
@@ -53,7 +173,7 @@ paths:
           format: int64
       responses:
         200:
-          description: Resource response successful
+          description: A specific resource's details
           content:
             application/json:
               schema:
@@ -61,21 +181,84 @@ paths:
               examples:
                 0:
                   value: |
-                    {"apiVersion":"1.0","data":{"category":"Books","created_at":"2019-06-15 17:55:32","downvotes":0,"id":3,"languages":[],"last_updated":"","name":"Free Tech Books","notes":"Focuses on general computer science concepts rather than a specific language","paid":false,"times_clicked":0,"upvotes":0,"url":"http://www.freetechbooks.com/"},"status":"ok","status_code":200}
-  /resources:
+                    {
+                      "apiVersion":"1.0",
+                      "data":{
+                        "category":"Books",
+                        "created_at":"2019-06-15 17:55:32",
+                        "downvotes":0,
+                        "id":3,
+                        "languages":[],
+                        "last_updated":"",
+                        "name":"Free Tech Books",
+                        "notes":"Focuses on general computer science concepts rather than a specific language",
+                        "paid":false,
+                        "times_clicked":0,
+                        "upvotes":0,
+                        "url":"http://www.freetechbooks.com/"
+                        
+                      },
+                      "status":"ok",
+                      "status_code":200
+                    }
+  /resources/{id}/{vote_direction}:
     get:
-      description: Gets list of all available resource entries
+      summary: RESOURCE RATINGS BY ID
+      description: 
+        Retrieves a specific resource's upvotes or downvotes. To retrieve the downvotes, enter `downvote` for the `{vote_direction}`. For upvotes, enter `upvote`.
+      parameters:
+      - name: id
+        in: path
+        description: Resource ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: vote_direction
+        in: path
+        description: Number of upvotes or downvotes given to a particular resource
       responses:
         200:
-          description: Resources list retrieval successful
+          description: A specific resource's upvote or downvote details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
+              examples:
+                0:
+                  value: |
+                    {
+                      "apiVersion":"1.0",
+                      "data":{
+                        
+                      },
+                      "status":"ok",
+                      "status_code":200
+                    }
+  /resources:
+    get:
+      summary: RETRIEVE RESOURCES
+      description: Gets list of all available resource entries or filtered entries based on provided criteria.
+      parameters:
+        name: 
+      responses:
+        200:
+          description: A list of all resources
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
         404:
-          description: The specified resource was not found
+          description: Resource not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      description: Creates a new resource
+      summary: CREATE A RESOURCE
+      description: Creates a new learning resource entry
       requestBody:
         content:
           application/json:
@@ -93,50 +276,124 @@ paths:
                 $ref: '#/components/schemas/Error'
       security:
       - ApiKeyAuth: []
-  /search:
-    get:
-      description: Searches the API for a given keyword
-      responses:
-        200: {}
-  /apikey:
-    post:
-      description: Request API key by providing Operation Code credentials
+    put:
+      summary: UPDATE A RESOURCE
+      description: Updates an existing learning resource entry
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Resource'
+        required: true
       responses:
         200:
-          description: API Key response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiKeyResponse'
-        401:
-          description: Unauthorized
+          description: Updated resource
+        404:
+          description: The specified resource was not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+      security:
+      - ApiKeyAuth: []
+  /search:
+    get:
+      description: Searches the API for a given keyword
+      responses:
+        200:
+          description: Search results returned
+  
 components:
   schemas:
     Error:
-      required:
-      - code
-      - message
       type: object
       properties:
-        code:
+        apiVersion: 
           type: string
-        message:
+        data: 
+          type: null
+        errors: 
           type: string
+        status: 
+          type: string
+        status_code: 
+          type: integer
+
     Resource:
       type: object
       properties:
         apiVersion:
           type: string
-        status_code:
-          type: integer
         data:
           $ref: '#/components/schemas/Resource_data'
+        status_code:
+          type: integer
         status:
           type: string
+    Category:
+      type: object
+      properties:
+        apiVersion:
+          type: string
+        data:
+          $ref: '#/components/schemas/Category_data'
+        has_next:
+          type: integer
+        has_previous:
+          type: integer
+        number_of_pages:
+          type: integer
+        page:
+          type: integer
+        records_per_page:
+          type: integer
+        status:
+          type: string
+        status_code:
+          type: integer
+        total_count:
+          type: integer
+    Category_data:
+      type: list
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          name:
+            type: string
+
+    Language:
+      type: object
+      properties:
+        apiVersion:
+          type: string
+        data:
+          $ref: '#/components/schemas/Language_data'
+        has_next:
+          type: integer
+        has_previous:
+          type: integer
+        number_of_pages:
+          type: integer
+        page:
+          type: integer
+        records_per_page:
+          type: integer
+        status:
+          type: string
+        status_code:
+          type: integer
+        total_count:
+          type: integer
+    Language_data:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        
     ApiKeyResponse:
       type: object
       properties:
@@ -146,74 +403,62 @@ components:
           $ref: '#/components/schemas/ApiKeyResponse_data'
         status:
           type: string
-    inline_response_200_data:
-      type: object
-      properties:
-        name:
-          type: string
-        id:
-          type: integer
-    inline_response_200:
-      type: object
-      properties:
-        records_per_page:
-          type: integer
-        apiVersion:
-          type: string
         status_code:
           type: integer
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/inline_response_200_data'
-        number_of_pages:
-          type: integer
-        total_count:
-          type: integer
-        has_next:
-          type: boolean
-        has_prev:
-          type: boolean
-        page:
-          type: integer
-        status:
-          type: string
+    ApiKeyRequest:
+      type: object
+      $ref: '#/components/schemas/ApiKeyRequest_data'
     Resource_data:
       type: object
       properties:
+        category:
+          type: string
+          required: true
+        created_at:
+          type: string
+        downvotes:
+          type: integer
+        id:
+          type: integer
         last_updated:
           type: string
-        notes:
-          type: string
-        times_clicked:
-          type: integer
         languages:
           type: array
           items:
             type: string
-        upvotes:
-          type: integer
         name:
+          type: string
+          required: true
+        notes:
           type: string
         paid:
           type: boolean
-        created_at:
-          type: string
-        id:
+          required: true
+        times_clicked:
           type: integer
-        category:
-          type: string
-        downvotes:
+        upvotes:
           type: integer
         url:
+          type: string
+          required: true
+    ApiKeyRequest_data:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
           type: string
     ApiKeyResponse_data:
       type: object
       properties:
         apikey:
           type: string
+        created_at:
+          type: timestamp
         email:
           type: string
+        last_updated:
+          type: timestamp
   responses:
     NotFound:
       description: The specified resource was not found
@@ -229,6 +474,7 @@ components:
             $ref: '#/components/schemas/Error'
   securitySchemes:
     ApiKeyAuth:
+      description: 
       type: apiKey
-      name: X-API-Key
+      name: x-apikey
       in: header
