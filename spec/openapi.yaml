@@ -6,6 +6,10 @@ servers:
 info:
   title: Operation Code Resources API
   version: '1.0'
+  x-logo:
+    url: 'https://operation-code-assets.s3.us-east-2.amazonaws.com/branding/logos/small-blue-logo.png'
+    altText: 'Operation Code Logo'
+    backgroundColor: '#252e3e'
   description: |
     # Introduction
     Operation Code Resources API is a collection of programming and cyber security learning resources curated by and for the Operation Code community.
@@ -177,13 +181,20 @@ paths:
           description: Resource not found
     put:
       summary: UPDATE A RESOURCE
-      description: Updates an existing learning resource entry
+      description: Updates an existing learning resource entry. The request body should be a JSON object containing the properties to be updated and their corresponding new values. 
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Resource'
+              type: object
+            example:
+              update_name:
+                value: |
+                  {
+                    'name': 'Updated Book Title'
+                  }  
         required: true
+           
       responses:
         200:
           description: Updated resource
@@ -251,6 +262,52 @@ paths:
                     }
       security:
       - ApiKeyAuth: []
+  /resources/{id}/click:
+    put:
+      summary: UPDATE RESOURCE VISITS BY ID
+      description:
+        Increments the `times_clicked` property of a resource 
+      parameters:
+      - name: id
+        in: path
+        description: Resource ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: Updated resource details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
+              examples:
+                0:
+                  value: |
+                    {
+                      'apiVersion': '1.0',
+                      'data': {
+                          'category': 'Tutorial',
+                          'created_at': '2019-07-21 15:41:19',
+                          'downvotes': 0,
+                          'id': 2137,
+                          'languages': [],
+                          'last_updated': '2019-07-22 16:05:53',
+                          'name': 'Some, but not ALL of the knowledge',
+                          'notes': null,
+                          'paid': false,
+                          'times_clicked': 3,
+                          'upvotes': 1,
+                          'url': 'http://www.test.com'
+                      },
+                      'status': 'ok',
+                      'status_code': 200
+                    }
+        404:
+          $ref: '#/components/responses/NotFound'
   /resources:
     get:
       summary: RETRIEVE RESOURCES
@@ -303,6 +360,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Resource'
+        401:
+          $ref: '#/components/responses/Unauthorized'
       security:
       - ApiKeyAuth: []
   /search:
@@ -515,8 +574,10 @@ components:
       properties:
         email:
           type: string
+          description: A valid e-mail address registered with Operation Code
         password:
           type: string
+          description: Password 
     ApiKeyResponse_data:
       type: object
       properties:
