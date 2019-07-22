@@ -17,7 +17,7 @@ info:
     # Authentication
     Create (POST) and update (PUT) routes are protected and require an API key. API key requests to the `/apikey` endpoint require valid Operation Code credentials in the request body. 
     
-    If you are not already a member of our community, join Operation Code [HERE](https://https://operationcode.org/join).
+    If you are not already a member of our community, join Operation Code [HERE](https://operationcode.org/join).
 
     When you create a request to an authenticated route, you *MUST* include the header `x-apikey` along with your API key.
 
