@@ -28,7 +28,7 @@ info:
 paths:
   /apikey:
     post:
-      summary: API KEY REQUEST
+      summary: API Key Request
       description: Request API key by providing valid Operation Code credentials
       requestBody:
         content:
@@ -43,16 +43,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiKeyResponse'
+              example: |
+                {
+                  'apiVersion': '1.0',
+                  'data': {
+                    'apikey': 'yourapikey',
+                    'email': 'your@email.com'
+                  }
+                  'status': 'ok',
+                  'status_code': 200
+                }
         401:
           $ref: '#/components/responses/Unauthorized'
   /categories:
     get:
-      summary: CATEGORIES LIST
-      description: Gets a list of all available resource categories, such as books,
-        tutorials, and coding challenges.
+      summary: List Categories
+      description: Gets a list of all available resource categories, such as books, tutorials, and coding challenges.
       responses:
         200:
-          description: A resource list
+          description: A list of categories
           content:
             application/json:
               schema:
@@ -89,18 +98,16 @@ paths:
                     }
   /languages:
     get:
-      summary: LANGUAGES LIST
+      summary: List Languages
       description: Gets list of all languages and topics available such as Python, SQL, and Artificial Intelligence
       responses:
         200:
-          description: A language list
+          description: A list of languages
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Language'
-              examples:
-                0:
-                  value: |
+              example: |
                     {
                       'apiVersion':'1.0',
                       'data':[
@@ -134,7 +141,7 @@ paths:
                     }
   /resources/{id}:
     get:
-      summary: RESOURCE DETAILS BY ID
+      summary: Get Resource
       description: Gets more details about a specific resource, given the resource
         ID
       parameters:
@@ -154,45 +161,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Resource'
-              example:
-                sample_book:
-                  value: |
-                    {
-                      'apiVersion':'1.0',
-                      'data':{
-                        'category':'Books',
-                        'created_at':'2019-06-15 17:55:32',
-                        'downvotes':0,
-                        'id':3,
-                        'languages':[],
-                        'last_updated':',
-                        'name':'Free Tech Books',
-                        'notes':'Focuses on general computer science concepts rather than a specific language',
-                        'paid':false,
-                        'times_clicked':0,
-                        'upvotes':0,
-                        'url':'http://www.freetechbooks.com/'
-                        
-                      },
-                      'status':'ok',
-                      'status_code':200
-                    }
+              example: |
+                {
+                  'apiVersion':'1.0',
+                  'data':{
+                    'category':'Books',
+                    'created_at':'2019-06-15 17:55:32',
+                    'downvotes':0,
+                    'id':3,
+                    'languages':[],
+                    'last_updated':',
+                    'name':'Free Tech Books',
+                    'notes':'Focuses on general computer science concepts rather than a specific language',
+                    'paid':false,
+                    'times_clicked':0,
+                    'upvotes':0,
+                    'url':'http://www.freetechbooks.com/'
+                    
+                  },
+                  'status':'ok',
+                  'status_code':200
+                }
         404:
-          description: Resource not found
+          $ref: '#/components/responses/NotFound'
     put:
-      summary: UPDATE A RESOURCE
+      summary: Update Resource
       description: Updates an existing learning resource entry. The request body should be a JSON object containing the properties to be updated and their corresponding new values. 
       requestBody:
         content:
           application/json:
             schema:
               type: object
-            example:
-              update_name:
-                value: |
-                  {
-                    'name': 'Updated Book Title'
-                  }  
+            example: |
+              {
+                'name': 'Updated Book Title'
+              }  
         required: true
       parameters:
         - name: id
@@ -217,7 +220,7 @@ paths:
       - ApiKeyAuth: []
   /resources/{id}/{vote_direction}:
     put:
-      summary: RATE AN EXISTING RESOURCE BY ID
+      summary: Update Resource - Upvote/Downvote
       description:
         Let other community members know the quality of a specific resource by adding an upvote or downvote rating. 
         To cast a downvote, enter `downvote` for the `{vote_direction}`. For upvotes, enter `upvote`.
@@ -247,33 +250,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Resource'
-              examples:
-                0:
-                  value: |
-                    {
-                      'apiVersion': '1.0',
-                      'data': {
-                          'category': 'Tutorial',
-                          'created_at': '2019-07-21 15:41:19',
-                          'downvotes': 0,
-                          'id': 2137,
-                          'languages': [],
-                          'last_updated': '2019-07-22 16:05:53',
-                          'name': 'Some, but not ALL of the knowledge',
-                          'notes': null,
-                          'paid': false,
-                          'times_clicked': 0,
-                          'upvotes': 1,
-                          'url': 'http://www.test.com'
-                      },
-                      'status': 'ok',
-                      'status_code': 200
-                    }
+              example: |
+                {
+                  'apiVersion': '1.0',
+                  'data': {
+                      'category': 'Tutorial',
+                      'created_at': '2019-07-21 15:41:19',
+                      'downvotes': 0,
+                      'id': 2137,
+                      'languages': [],
+                      'last_updated': '2019-07-22 16:05:53',
+                      'name': 'Some, but not ALL of the knowledge',
+                      'notes': null,
+                      'paid': false,
+                      'times_clicked': 0,
+                      'upvotes': 1,
+                      'url': 'http://www.test.com'
+                  },
+                  'status': 'ok',
+                  'status_code': 200
+                }
+        404:
+          $ref: '#/components/responses/NotFound'
       security:
       - ApiKeyAuth: []
   /resources/{id}/click:
     put:
-      summary: UPDATE RESOURCE VISITS BY ID
+      summary: Update Resource - Increment Number of Views
       description:
         Increments the `times_clicked` property of a resource 
       parameters:
@@ -293,39 +296,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Resource'
-              examples:
-                0:
-                  value: |
-                    {
-                      'apiVersion': '1.0',
-                      'data': {
-                          'category': 'Tutorial',
-                          'created_at': '2019-07-21 15:41:19',
-                          'downvotes': 0,
-                          'id': 2137,
-                          'languages': [],
-                          'last_updated': '2019-07-22 16:05:53',
-                          'name': 'Some, but not ALL of the knowledge',
-                          'notes': null,
-                          'paid': false,
-                          'times_clicked': 3,
-                          'upvotes': 1,
-                          'url': 'http://www.test.com'
-                      },
-                      'status': 'ok',
-                      'status_code': 200
-                    }
+              example: |
+                {
+                  'apiVersion': '1.0',
+                  'data': {
+                      'category': 'Tutorial',
+                      'created_at': '2019-07-21 15:41:19',
+                      'downvotes': 0,
+                      'id': 2137,
+                      'languages': [],
+                      'last_updated': '2019-07-22 16:05:53',
+                      'name': 'Some, but not ALL of the knowledge',
+                      'notes': null,
+                      'paid': false,
+                      'times_clicked': 3,
+                      'upvotes': 1,
+                      'url': 'http://www.test.com'
+                  },
+                  'status': 'ok',
+                  'status_code': 200
+                }
         404:
           $ref: '#/components/responses/NotFound'
   /resources:
     get:
-      summary: RETRIEVE RESOURCES
+      summary: List Resources
       description: Gets list of all available resource entries or filtered entries based on provided criteria.
       parameters:
         - in: query
           name: paid
           required: false
-          description: Whether the resource is paid or not. To search for FREE resources, make a `GET` request to `/resources?paid=false`.
+          description: Whether the resource is paid or not. To search for *FREE* resources, make a `GET` request to `/resources?paid=false`.
           schema:
             type: boolean
             enum:
@@ -343,6 +344,13 @@ paths:
           description: Category of resource. For example, to filter for book resources, make a `GET` request to `/resources?category=books`.
           schema:
             type: string
+        - in: query
+          name: updated_after
+          required: false
+          description: Filters resources that were updated after the specified date. To get all resources updated after July 17, 2019, use `/resources?updated_after=2019-07-17`
+          schema:
+            type: string
+            format: date-time
 
       responses:
         200:
@@ -351,16 +359,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FilteredResourcesResponse'
+              example: |
+                {
+                  'apiVersion': '1.0',
+                  'data': 
+                  [
+                      {
+                        'category': 'Tutorial',
+                        'created_at': '2019-07-21 15:41:19',
+                        'downvotes': 0,
+                        'id': 2137,
+                        'languages': [],
+                        'last_updated': '2019-07-22 17:39:50',
+                        'name': 'Some, but not ALL of the knowledge',
+                        'notes': null,
+                        'paid': false,
+                        'times_clicked': 3,
+                        'upvotes': 1,
+                        'url': 'http://www.test.com'
+                      }
+                  ],
+                    'has_next': false,
+                    'has_prev': false,
+                    'number_of_pages': 1,
+                    'page': 1,
+                    'records_per_page': 20,
+                    'status': 'ok',
+                    'status_code': 200,
+                    'total_count': 1
+                }
         404:
           $ref: '#/components/responses/NotFound'
     post:
-      summary: CREATE A RESOURCE
+      summary: Create Resource
       description: Creates a new learning resource entry. The required properties for a new entry are `category`, `name`, `paid`, and `url` and must be included in the request body.
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Resource'
+              $ref: '#/components/schemas/Resource_data'
+            example: |
+              {
+                    'category': 'Tutorial',
+                    'name': 'CSS Tutorial',
+                    'paid': false,
+                    'url': 'https://www.w3schools.com/css/'
+                }
         required: true
       responses:
         200:
@@ -369,13 +413,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Resource'
+              example: |
+                    {
+                        'apiVersion': '1.0',
+                        'data': {
+                            'category': 'Tutorial',
+                            'created_at': '2019-07-21 15:41:19',
+                            'downvotes': 0,
+                            'id': 2137,
+                            'languages': [],
+                            'last_updated': '2019-07-22 16:05:53',
+                            'name': 'Some, but not ALL of the knowledge',
+                            'notes': null,
+                            'paid': false,
+                            'times_clicked': 3,
+                            'upvotes': 1,
+                            'url': 'http://www.test.com'
+                        },
+                        'status': 'ok',
+                        'status_code': 200
+                      }
         401:
           $ref: '#/components/responses/Unauthorized'
       security:
       - ApiKeyAuth: []
   /search:
     get:
-      summary: SEARCH FOR RESOURCES BY KEYWORD
+      summary: Search
       description: Searches for resources containing a given keyword. For example, to search for any resource containing the word `algorithm`, make a `GET` request to `search?q=algorithm`
       parameters:
         - in: query
@@ -607,12 +671,36 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+          example: |
+            {
+              'apiVersion': '1.0',
+              'data': null,
+              'errors': [
+                  {
+                      'code': 'not-found'
+                  }
+              ],
+              'status': 'Not Found',
+              'status_code': 404
+            }
     Unauthorized:
       description: Unauthorized Access
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+          example: |
+            {
+              'apiVersion': '1.0',
+              'data': null,
+              'errors': [
+                  {
+                      'code': 'unauthorized'
+                  }
+              ],
+              'status': 'Unauthorized',
+              'status_code': 401
+            }
   securitySchemes:
     ApiKeyAuth:
       description: API Key Authentication
