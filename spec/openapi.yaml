@@ -70,6 +70,7 @@ paths:
       parameters:
         - in: query
           name: q
+          description: Query parameter
           schema:
             type: string
           required: true
@@ -319,7 +320,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Resource'
             example: |
               {
                 'name': 'Updated Book Title'
@@ -342,6 +343,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Resource'
+              example: |
+                {
+                    'apiVersion': '1.0',
+                    'data': {
+                        'category': 'Tutorial',
+                        'created_at': '2019-07-21 15:41:19',
+                        'downvotes': 0,
+                        'id': 2137,
+                        'languages': [],
+                        'last_updated': '2019-07-22 16:05:53',
+                        'name': 'Some, but not ALL of the knowledge',
+                        'notes': null,
+                        'paid': false,
+                        'times_clicked': 3,
+                        'upvotes': 1,
+                        'url': 'http://www.test.com'
+                    },
+                    'status': 'ok',
+                    'status_code': 200
+                  }
+
         404:
           $ref: '#/components/responses/NotFound'
       security:
@@ -541,28 +563,24 @@ components:
               message:
                 description: Error message
                 type: string
+              missing_params:
+                type: array
+                description: List of missing parameters
+                items:
+                  type: string
+              invalid_params:
+                description: List of invalid parameters
+                type: array
+                items:
+                  type: string
+            required: [code, message]
         status: 
           type: string
           description: Status message
         status_code: 
           type: integer
           description: Status code
-    
-    ValidationError:
-      allOf:
-        - $ref: '#/components/schemas/Error'
-        - type: object
-          properties:
-            missing_params:
-              type: array
-              items:
-                type: string
-            invalid_params:
-              type: array
-              items:
-                type: string
-      
-        
+            
 
     Resource:
       type: object
@@ -587,15 +605,20 @@ components:
         data:
           $ref: '#/components/schemas/Category_data'
         has_next:
-          type: integer
+          type: boolean
+          description: Additional pages
         has_previous:
-          type: integer
+          type: boolean
+          description: Previous pages
         number_of_pages:
           type: integer
+          description: Total pages
         page:
           type: integer
+          description: Current page
         records_per_page:
           type: integer
+          description: Records per page
         status: 
           type: string
           description: Status message
@@ -611,8 +634,10 @@ components:
         properties:
           id:
             type: integer
+            description: Category ID
           name:
             type: string
+            description: Category name
 
     Language:
       type: object
@@ -692,48 +717,61 @@ components:
       properties:
         category:
           type: string
+          description: Category
         created_at:
           type: string
           format: date-time
+          description: Date created
         downvotes:
           type: integer
+          description: Negative ratings
         id:
           type: integer
+          description: Resource ID
         last_updated:
           type: string
           format: date-time
+          description: Date updated
         languages:
           type: array
+          description: List of languages
           items:
             type: string
         name:
           type: string
+          description: Resource name
         notes:
           type: string
+          description: Resource notes
         paid:
           type: boolean
-        times_clicked:
-          type: integer
+          description: True or false for whether resource is paid
         upvotes:
           type: integer
+          description: Positive ratings
         url:
           type: string
+          description: Resource url
       
     SearchResponse:
       type: object
       properties:
         apiVersion:
           type: string
+          description: API version
         data:
           type: array
           items:
             $ref: '#/components/schemas/Resource_data'
         number_of_pages:
           type: integer
+          description: Total pages
         page:
           type: integer
+          description: Current page
         records_per_page:
           type: integer
+          description: Records per page
         status: 
           type: string
           description: Status message
@@ -742,26 +780,33 @@ components:
           description: Status code
         total_count:
           type: integer
+          description: Total resources retrieved
     
     FilteredResourcesResponse:
       type: object
       properties:
         apiVersion:
           type: string
+          description: API version
         data:
           type: array
           items:
             $ref: '#/components/schemas/Resource_data'
         has_next:
-          type: integer
+          type: boolean
+          description: Additional pages
         has_previous:
-          type: integer
+          type: boolean
+          description: Previous pages
         number_of_pages:
           type: integer
+          description: Total pages
         page:
           type: integer
+          description: Current page
         records_per_page:
           type: integer
+          description: Records per page
         status: 
           type: string
           description: Status message
@@ -770,6 +815,7 @@ components:
           description: Status code
         total_count:
           type: integer
+          description: Total resources retrieved
 
 ##############################
 # API Request and Response
@@ -788,25 +834,32 @@ components:
       properties:
         apiVersion:
           type: string
+          description: API version
         data:
           $ref: '#/components/schemas/ApiKeyResponse_data'
-        status:
+        status: 
           type: string
-        status_code:
+          description: Status message
+        status_code: 
           type: integer
+          description: Status code
     ApiKeyResponse_data:
       type: object
       properties:
         apikey:
           type: string
+          description: API key
         created_at:
           type: string
           format: date-time
+          description: Date created
         email:
           type: string
+          description: E-mail address
         last_updated:
           type: string
           format: date-time
+          description: Date updated
 
 ##############################
 # Error Responses
@@ -875,7 +928,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/Error'
           example: |
             {
               'apiVersion': '1.0',
