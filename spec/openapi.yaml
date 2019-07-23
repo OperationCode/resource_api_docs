@@ -64,7 +64,7 @@ paths:
   /search:
     get:
       summary: Search
-      description: Searches for resources containing a given keyword. For example, to search for any resource containing the word `algorithm`, make a `GET` request to `search?q=algorithm`
+      description: Searches for resources containing a given keyword. For example, to search for any resource containing the term `binary trees`, make a `GET` request to `search?q=binary trees`
       tags: 
         - Search
       parameters:
@@ -75,11 +75,39 @@ paths:
           required: true
       responses:
         200:
-          description: Search results returned
+          description: Search response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchResponse'
+              example: |
+                {
+                  'apiVersion': '1.0',
+                  'data': [
+                      {
+                          'category': 'Tutorials',
+                          'created_at': '2019-05-25 18:52:15',
+                          'downvotes': 0,
+                          'id': 953,
+                          'languages': [
+                              'C'
+                          ],
+                          'last_updated': ',
+                          'name': 'C Tutorial',
+                          'notes': 'Learn C with our popular C tutorial, which will take you from the very basics of C all the way through sophisticated topics like binary trees and data structures.',
+                          'paid': false,
+                          'times_clicked': 0,
+                          'upvotes': 0,
+                          'url': 'https://www.cprogramming.com/tutorial/c-tutorial.html'
+                      }
+                  ],
+                  'number_of_pages': 1,
+                  'page': 0,
+                  'records_per_page': 20,
+                  'status': 'ok',
+                  'status_code': 200,
+                  'total_count': 1
+                }
         404:
           $ref: '#/components/responses/NotFound'
   /categories:
@@ -376,7 +404,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Resource_data'
+              $ref: '#/components/schemas/CreateResourceRequest'
             example: |
               {
                     'category': 'Tutorial',
@@ -514,68 +542,30 @@ components:
         name:
           type: string
     
-    SearchResponse:
+
+    CreateResourceRequest:
+      allOf:
+        - $ref: '#/components/schemas/ResourceRequest'
+        - required: [category, name, paid, url]
+    
+    ResourceRequest:
       type: object
       properties:
-        apiVersion:
+        category:
           type: string
-        data:
+        languages:
           type: array
           items:
-            type: object
-            $ref: '#/components/schemas/Resource_data'
-        number_of_pages:
-          type: integer
-        page:
-          type: integer
-        records_per_page:
-          type: integer
-        status:
+            type: string
+        name:
           type: string
-        status_code:
-          type: integer
-        total_count:
-          type: integer
-    FilteredResourcesResponse:
-      type: object
-      properties:
-        apiVersion:
+        notes:
           type: string
-        data:
-          type: array
-          items:
-            type: object
-            $ref: '#/components/schemas/Resource_data'
-        has_next:
-          type: integer
-        has_previous:
-          type: integer
-        number_of_pages:
-          type: integer
-        page:
-          type: integer
-        records_per_page:
-          type: integer
-        status:
+        paid:
+          type: boolean
+        url:
           type: string
-        status_code:
-          type: integer
-        total_count:
-          type: integer
-    ApiKeyResponse:
-      type: object
-      properties:
-        apiVersion:
-          type: string
-        data:
-          $ref: '#/components/schemas/ApiKeyResponse_data'
-        status:
-          type: string
-        status_code:
-          type: integer
-    ApiKeyRequest:
-      type: object
-      $ref: '#/components/schemas/ApiKeyRequest_data'
+  
     Resource_data:
       type: object
       properties:
@@ -607,8 +597,59 @@ components:
           type: integer
         url:
           type: string
-      required: [category, name, paid, url]
-    ApiKeyRequest_data:
+      
+    SearchResponse:
+      type: object
+      properties:
+        apiVersion:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resource_data'
+        number_of_pages:
+          type: integer
+        page:
+          type: integer
+        records_per_page:
+          type: integer
+        status:
+          type: string
+        status_code:
+          type: integer
+        total_count:
+          type: integer
+    
+    FilteredResourcesResponse:
+      type: object
+      properties:
+        apiVersion:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resource_data'
+        has_next:
+          type: integer
+        has_previous:
+          type: integer
+        number_of_pages:
+          type: integer
+        page:
+          type: integer
+        records_per_page:
+          type: integer
+        status:
+          type: string
+        status_code:
+          type: integer
+        total_count:
+          type: integer
+
+##############################
+# API Request and Response
+############################## 
+    ApiKeyRequest:
       type: object
       properties:
         email:
@@ -617,6 +658,17 @@ components:
         password:
           type: string
           description: Password 
+    ApiKeyResponse:
+      type: object
+      properties:
+        apiVersion:
+          type: string
+        data:
+          $ref: '#/components/schemas/ApiKeyResponse_data'
+        status:
+          type: string
+        status_code:
+          type: integer
     ApiKeyResponse_data:
       type: object
       properties:
@@ -630,6 +682,10 @@ components:
         last_updated:
           type: string
           format: date-time
+
+##############################
+# Error Responses
+##############################
   responses:
     NotFound:
       description: Resource not found
@@ -649,6 +705,7 @@ components:
               'status': 'Not Found',
               'status_code': 404
             }
+
     Unauthorized:
       description: Unauthorized access
       content:
@@ -667,6 +724,7 @@ components:
               'status': 'Unauthorized',
               'status_code': 401
             }
+
     BadRequest:
       description: Bad request
       content:
@@ -707,6 +765,8 @@ components:
               'status': 'Unprocessable Entity',
               'status_code': 422
             } 
+
+
   securitySchemes:
     ApiKeyAuth:
       description: API key authentication
