@@ -9,8 +9,8 @@ info:
   x-logo:
     url: 'https://operation-code-assets.s3.us-east-2.amazonaws.com/branding/logos/small-blue-logo.png'
     altText: 'Operation Code Logo'
-    # backgroundColor: '#252e3e'
-    # href: 'https://operationcode.org/contact'
+    backgroundColor: '#252e3e'
+    href: 'https://operationcode.org/contact'
   description: |
     # Introduction
     Operation Code Resources API is a collection of programming and cyber security learning resources curated by and for the Operation Code community.
@@ -22,6 +22,7 @@ info:
 
     When you create a request to an authenticated route, you *MUST* include the header `x-apikey` along with your API key.
 
+
   contact:
     name: Operation Code
     url: https://operationcode.org/contact
@@ -31,6 +32,8 @@ paths:
     post:
       summary: API Key Request
       description: Request API key by providing valid Operation Code credentials
+      tags: 
+        - Request Key
       requestBody:
         content:
           application/json:
@@ -39,7 +42,7 @@ paths:
         required: true
       responses:
         200:
-          description: API Key Response
+          description: API key response
           content:
             application/json:
               schema:
@@ -58,6 +61,27 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         400:
           $ref: '#/components/responses/BadRequest'
+  /search:
+    get:
+      summary: Search
+      description: Searches for resources containing a given keyword. For example, to search for any resource containing the word `algorithm`, make a `GET` request to `search?q=algorithm`
+      tags: 
+        - Search
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Search results returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        404:
+          $ref: '#/components/responses/NotFound'
   /categories:
     get:
       summary: List Categories
@@ -69,40 +93,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Category'
-              examples:
-                0:
-                  value: |
-                    {
-                      'apiVersion':'1.0',
-                      'data':[
-                        {'id':1,'name':'Books'},
-                        {'id':2,'name':'Code Challenges'},
-                        {'id':3,'name':'Getting Started'},
-                        {'id':4,'name':'Tutorials'},
-                        {'id':5,'name':'Online Courses'},
-                        {'id':6,'name':'Jobs'},
-                        {'id':7,'name':'Tools'},
-                        {'id':8,'name':'Programming for Kids'},{'id':9,'name':'REPL/Code Simulators'},{'id':10,'name':'Design'},
-                        {'id':11,'name':'Computer Hardware'},{'id':12,'name':'Computer Networking'},{'id':13,'name':'Cloud IDEs'},
-                        {'id':14,'name':'Docker'},
-                        {'id':15,'name':'Regular Expressions'},{'id':16,'name':'Mentorship'},
-                        {'id':17,'name':'News'},
-                        {'id':18,'name':'Back End Dev'},
-                        {'id':19,'name':'Mobile Dev'},
-                        {'id':20,'name':'Cheat Sheets'}],
-                      'has_next':true,
-                      'has_prev':false,
-                      'number_of_pages':4,
-                      'page':1,
-                      'records_per_page':20,
-                      'status':'ok',
-                      'status_code':200,
-                      'total_count':72
-                    }
+              example: |
+                {
+                  'apiVersion':'1.0',
+                  'data':[
+                    {'id':1,'name':'Books'},
+                    {'id':2,'name':'Code Challenges'},
+                    {'id':3,'name':'Getting Started'},
+                    {'id':4,'name':'Tutorials'},
+                    {'id':5,'name':'Online Courses'},
+                    {'id':6,'name':'Jobs'},
+                    {'id':7,'name':'Tools'},
+                    {'id':8,'name':'Programming for Kids'},{'id':9,'name':'REPL/Code Simulators'},{'id':10,'name':'Design'},
+                    {'id':11,'name':'Computer Hardware'},{'id':12,'name':'Computer Networking'},{'id':13,'name':'Cloud IDEs'},
+                    {'id':14,'name':'Docker'},
+                    {'id':15,'name':'Regular Expressions'},{'id':16,'name':'Mentorship'},
+                    {'id':17,'name':'News'},
+                    {'id':18,'name':'Back End Dev'},
+                    {'id':19,'name':'Mobile Dev'},
+                    {'id':20,'name':'Cheat Sheets'}],
+                  'has_next':true,
+                  'has_prev':false,
+                  'number_of_pages':4,
+                  'page':1,
+                  'records_per_page':20,
+                  'status':'ok',
+                  'status_code':200,
+                  'total_count':72
+                }
   /languages:
     get:
       summary: List Languages
       description: Gets list of all languages and topics available such as Python, SQL, and Artificial Intelligence
+      tags:
+        - List Languages
       responses:
         200:
           description: A list of languages
@@ -146,7 +170,8 @@ paths:
     get:
       summary: Get Resource
       description: Gets more details about a specific resource, given the resource ID
-      tags: resources
+      tags: 
+        - Get Resource
       parameters:
       - name: id
         in: path
@@ -159,7 +184,7 @@ paths:
           format: int64
       responses:
         200:
-          description: A specific resource's details
+          description: Resource details
           content:
             application/json:
               schema:
@@ -190,6 +215,8 @@ paths:
     put:
       summary: Update Resource
       description: Updates an existing learning resource entry. The request body should be a JSON object containing the properties to be updated and their corresponding new values. 
+      tags:
+        - Update Resource
       requestBody:
         content:
           application/json:
@@ -238,7 +265,7 @@ paths:
           format: int64
       responses:
         200:
-          description: Updated resource details
+          description: Updated resource 
           content:
             application/json:
               schema:
@@ -265,10 +292,13 @@ paths:
                 }
         404:
           $ref: '#/components/responses/NotFound'
+
   /resources:
     get:
       summary: List Resources
       description: Gets list of all available resource entries or filtered entries based on provided criteria.
+      tags:
+        - List Resources
       parameters:
         - in: query
           name: paid
@@ -340,6 +370,8 @@ paths:
     post:
       summary: Create Resource
       description: Creates a new learning resource entry. The required properties for a new entry are `category`, `name`, `paid`, and `url` and must be included in the request body.
+      tags:
+        - Create Resource
       requestBody:
         content:
           application/json:
@@ -355,7 +387,7 @@ paths:
         required: true
       responses:
         200:
-          description: Added new resource
+          description: Created resource
           content:
             application/json:
               schema:
@@ -382,30 +414,14 @@ paths:
                       }
         401:
           $ref: '#/components/responses/Unauthorized'
+        422:
+          $ref: '#/components/responses/Invalid'
       security:
       - ApiKeyAuth: []
-  /search:
-    get:
-      summary: Search
-      description: Searches for resources containing a given keyword. For example, to search for any resource containing the word `algorithm`, make a `GET` request to `search?q=algorithm`
-      parameters:
-        - in: query
-          name: q
-          schema:
-            type: string
-          required: true
-      responses:
-        200:
-          description: Search results returned
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SearchResponse'
-        404:
-          $ref: '#/components/responses/NotFound'
   
 components:
   schemas:
+
     Error:
       type: object
       properties:
@@ -414,7 +430,9 @@ components:
         data: 
           type: object
         errors: 
-          type: string
+          type: array
+          items:
+            type: object
         status: 
           type: string
         status_code: 
@@ -431,6 +449,7 @@ components:
           type: integer
         status:
           type: string
+
     Category:
       type: object
       properties:
@@ -613,7 +632,7 @@ components:
           format: date-time
   responses:
     NotFound:
-      description: Resource Not Found
+      description: Resource not found
       content:
         application/json:
           schema:
@@ -631,7 +650,7 @@ components:
               'status_code': 404
             }
     Unauthorized:
-      description: Unauthorized Access
+      description: Unauthorized access
       content:
         application/json:
           schema:
@@ -649,7 +668,7 @@ components:
               'status_code': 401
             }
     BadRequest:
-      description: Bad Request
+      description: Bad request
       content:
         application/json:
           schema:
@@ -667,10 +686,67 @@ components:
               'status': 'Bad Request',
               'status_code': 400
             } 
+
+    Invalid:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example: |
+            {
+              'apiVersion': '1.0',
+              'data': null,
+              'errors': [{
+                  'invalid_params': [
+                      'url'
+                  ],
+                  'message': 'This URL already exists in the database. Resource id 135 already has this URL.',
+                  'type': 'validation'
+              }],
+              'status': 'Unprocessable Entity',
+              'status_code': 422
+            } 
   securitySchemes:
     ApiKeyAuth:
-      description: API Key Authentication
+      description: API key authentication
       type: apiKey
       name: x-apikey
       in: header
+
+##################
+# Groups and Tags
+##################
+tags:
+  - name: List Resources
+  - name: Get Resource
+  - name: Create Resource
+  - name: Update Resource
+  - name: List Categories
+  - name: Get Category
+  - name: List Languages
+  - name: Get Language
+  - name: Search
+  - name: API Key Request
+x-tagGroups:
+  - name: API Key Request
+    tags:
+      - Request Key
+  - name: Search 
+    tags:
+      - Search
+  - name: Resources
+    tags: 
+      - List Resources
+      - Get Resource
+      - Create Resource
+      - Update Resource
+  - name: Categories
+    tags:
+      - List Categories
+      - Get Category
+  - name: Languages
+    tags:
+      - List Languages
+      - Get Language
 
