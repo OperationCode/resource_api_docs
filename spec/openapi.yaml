@@ -9,7 +9,8 @@ info:
   x-logo:
     url: 'https://operation-code-assets.s3.us-east-2.amazonaws.com/branding/logos/small-blue-logo.png'
     altText: 'Operation Code Logo'
-    backgroundColor: '#252e3e'
+    # backgroundColor: '#252e3e'
+    # href: 'https://operationcode.org/contact'
   description: |
     # Introduction
     Operation Code Resources API is a collection of programming and cyber security learning resources curated by and for the Operation Code community.
@@ -55,6 +56,8 @@ paths:
                 }
         401:
           $ref: '#/components/responses/Unauthorized'
+        400:
+          $ref: '#/components/responses/BadRequest'
   /categories:
     get:
       summary: List Categories
@@ -142,8 +145,8 @@ paths:
   /resources/{id}:
     get:
       summary: Get Resource
-      description: Gets more details about a specific resource, given the resource
-        ID
+      description: Gets more details about a specific resource, given the resource ID
+      tags: resources
       parameters:
       - name: id
         in: path
@@ -645,9 +648,29 @@ components:
               'status': 'Unauthorized',
               'status_code': 401
             }
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example: |
+            {
+              'apiVersion': '1.0',
+              'data': null,
+              'errors': [
+                  {
+                      'code': 'bad-request',
+                      'message': '400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)'
+                  }
+              ],
+              'status': 'Bad Request',
+              'status_code': 400
+            } 
   securitySchemes:
     ApiKeyAuth:
       description: API Key Authentication
       type: apiKey
       name: x-apikey
       in: header
+
