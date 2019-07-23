@@ -149,6 +149,41 @@ paths:
                   'status_code':200,
                   'total_count':72
                 }
+  /categories/{id}:
+    get:
+      summary: Get Category
+      description: Gets more details about a specific category, given the Category ID
+      tags: 
+        - Get Category
+      parameters:
+      - name: id
+        in: path
+        description: Category ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: Category details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category_data'
+              example: |
+                {
+                  'apiVersion':'1.0',
+                  'data':{
+                    'id':1,
+                    'name':'Books',
+                  },
+                  'status':'ok',
+                  'status_code':200
+                }
+        404:
+          $ref: '#/components/responses/NotFound'
   /languages:
     get:
       summary: List Languages
@@ -194,6 +229,41 @@ paths:
                       'status_code':200,
                       'total_count':73
                     }
+  /languages/{id}:
+    get:
+      summary: Get Language
+      description: Gets more details about a specific language, given the language ID
+      tags: 
+        - Get Language
+      parameters:
+      - name: id
+        in: path
+        description: Language ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: Language details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Language_data'
+              example: |
+                {
+                  'apiVersion':'1.0',
+                  'data':{
+                    'id':2,
+                    'name':'Python',
+                  },
+                  'status':'ok',
+                  'status_code':200
+                }
+        404:
+          $ref: '#/components/responses/NotFound'
   /resources/{id}:
     get:
       summary: Get Resource
@@ -455,28 +525,59 @@ components:
       properties:
         apiVersion: 
           type: string
+          description: API version
         data: 
           type: object
+          description: A null data object
         errors: 
           type: array
+          description: List of errors
           items:
             type: object
+            properties:
+              code:
+                description: Error code
+                type: string
+              message:
+                description: Error message
+                type: string
         status: 
           type: string
+          description: Status message
         status_code: 
           type: integer
+          description: Status code
+    
+    ValidationError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          properties:
+            missing_params:
+              type: array
+              items:
+                type: string
+            invalid_params:
+              type: array
+              items:
+                type: string
+      
+        
 
     Resource:
       type: object
       properties:
         apiVersion:
           type: string
+          description: API version
         data:
           $ref: '#/components/schemas/Resource_data'
-        status_code:
-          type: integer
-        status:
+        status: 
           type: string
+          description: Status message
+        status_code: 
+          type: integer
+          description: Status code
 
     Category:
       type: object
@@ -495,10 +596,12 @@ components:
           type: integer
         records_per_page:
           type: integer
-        status:
+        status: 
           type: string
-        status_code:
+          description: Status message
+        status_code: 
           type: integer
+          description: Status code
         total_count:
           type: integer
     Category_data:
@@ -513,34 +616,46 @@ components:
 
     Language:
       type: object
+      description: Language or topic presented in the resource
       properties:
         apiVersion:
           type: string
+          description: API version
         data:
           $ref: '#/components/schemas/Language_data'
         has_next:
-          type: integer
+          type: boolean
+          description: Additional pages
         has_previous:
-          type: integer
+          type: boolean
+          description: Previous pages
         number_of_pages:
           type: integer
+          description: Total pages
         page:
           type: integer
+          description: Current page
         records_per_page:
           type: integer
-        status:
+          description: Records per page
+        status: 
           type: string
-        status_code:
+          description: Status message
+        status_code: 
           type: integer
+          description: Status code
         total_count:
           type: integer
+          description: Total languages retrieved
     Language_data:
       type: object
       properties:
         id:
           type: integer
+          description: Language ID
         name:
           type: string
+          description: Language Name
     
 
     CreateResourceRequest:
@@ -553,18 +668,24 @@ components:
       properties:
         category:
           type: string
+          description: Category
         languages:
           type: array
+          description: List of languages
           items:
             type: string
         name:
           type: string
+          description: Resource name
         notes:
           type: string
+          description: Resource notes
         paid:
           type: boolean
+          description: True or false for whether resource is paid
         url:
           type: string
+          description: Resource url
   
     Resource_data:
       type: object
@@ -613,10 +734,12 @@ components:
           type: integer
         records_per_page:
           type: integer
-        status:
+        status: 
           type: string
-        status_code:
+          description: Status message
+        status_code: 
           type: integer
+          description: Status code
         total_count:
           type: integer
     
@@ -639,10 +762,12 @@ components:
           type: integer
         records_per_page:
           type: integer
-        status:
+        status: 
           type: string
-        status_code:
+          description: Status message
+        status_code: 
           type: integer
+          description: Status code
         total_count:
           type: integer
 
@@ -750,7 +875,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/ValidationError'
           example: |
             {
               'apiVersion': '1.0',
