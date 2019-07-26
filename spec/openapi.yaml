@@ -64,7 +64,7 @@ paths:
   /search:
     get:
       summary: Search
-      description: Searches for resources containing a given keyword. For example, to search for any resource containing the term `binary trees`, make a `GET` request to `search?q=binary trees`
+      description: Searches for resources containing a given keyword. For example, to search for any resource containing the term `binary trees`, make a `GET` request to `search?q=binary trees` 
       tags: 
         - Search
       parameters:
@@ -76,7 +76,7 @@ paths:
           required: true
       responses:
         200:
-          description: Search response
+          description: Search results
           content:
             application/json:
               schema:
@@ -112,9 +112,10 @@ paths:
         404:
           $ref: '#/components/responses/NotFound'
   /categories:
+    tags: List Categories
     get:
       summary: List Categories
-      description: Gets a list of all available resource categories, such as books, tutorials, and coding challenges.
+      description: Gets a list of all available categories. Note&#58; The `page` attribute in the response of the `/search` endpoint begins with `0`, but the `page` attribute in the response of the `List Categories` endpoint begins with `1`.
       responses:
         200:
           description: A list of categories
@@ -133,10 +134,15 @@ paths:
                     {'id':5,'name':'Online Courses'},
                     {'id':6,'name':'Jobs'},
                     {'id':7,'name':'Tools'},
-                    {'id':8,'name':'Programming for Kids'},{'id':9,'name':'REPL/Code Simulators'},{'id':10,'name':'Design'},
-                    {'id':11,'name':'Computer Hardware'},{'id':12,'name':'Computer Networking'},{'id':13,'name':'Cloud IDEs'},
+                    {'id':8,'name':'Programming for Kids'},
+                    {'id':9,'name':'REPL/Code Simulators'},
+                    {'id':10,'name':'Design'},
+                    {'id':11,'name':'Computer Hardware'},
+                    {'id':12,'name':'Computer Networking'},
+                    {'id':13,'name':'Cloud IDEs'},
                     {'id':14,'name':'Docker'},
-                    {'id':15,'name':'Regular Expressions'},{'id':16,'name':'Mentorship'},
+                    {'id':15,'name':'Regular Expressions'},
+                    {'id':16,'name':'Mentorship'},
                     {'id':17,'name':'News'},
                     {'id':18,'name':'Back End Dev'},
                     {'id':19,'name':'Mobile Dev'},
@@ -188,7 +194,7 @@ paths:
   /languages:
     get:
       summary: List Languages
-      description: Gets list of all languages and topics available such as Python, SQL, and Artificial Intelligence
+      description: Gets list of all available language entries. Note&#58; The `page` attribute in the response of the `/search` endpoint begins with `0`, but the `page` attribute in the response of the `List Languages` endpoint begins with `1`.
       tags:
         - List Languages
       responses:
@@ -417,7 +423,7 @@ paths:
   /resources:
     get:
       summary: List Resources
-      description: Gets list of all available resource entries or filtered entries based on provided criteria.
+      description: Gets list of all available resource entries or filtered entries based on provided criteria. Note&#58; The `page` attribute in the response of the `/search` endpoint begins with `0`, but the `page` attribute in the response of the `List Resources` endpoint begins with `1`.
       tags:
         - List Resources
       parameters:
