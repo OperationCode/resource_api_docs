@@ -550,7 +550,7 @@ components:
           description: API version
         data: 
           type: object
-          description: A null data object
+          description: A data object
         errors: 
           type: array
           description: List of errors
