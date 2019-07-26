@@ -70,7 +70,7 @@ paths:
       parameters:
         - in: query
           name: q
-          description: Query parameter
+          description: Keyword(s) to search for across all of the data
           schema:
             type: string
           required: true
