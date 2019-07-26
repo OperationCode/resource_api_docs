@@ -395,8 +395,8 @@ paths:
   /resources/{id}/click:
     put:
       summary: Update Resource - Increment Number of Views
-      description:
-        Increments the `times_clicked` property of a resource 
+      description: |
+        Increments the `times_clicked` property of a resource. The intention of this endpoint is to collect data about how popular a resource is based on how many times it is accessed. Please set up your integration to increment the `times_clicked` property when a user clicks through to view a resource. 
       tags: 
         - Update Resource
       parameters:
