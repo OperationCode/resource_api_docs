@@ -80,7 +80,7 @@ paths:
   /search:
     get:
       summary: Search
-      description: Searches for resources containing a given keyword. For example, to search for any resource containing the term `binary trees`, make a `GET` request to `search?q=binary trees` 
+      description: Searches for resources containing a given keyword. For example, to search for any resource containing the term `binary trees`, make a `GET` request to `search?q=binary trees` Note&#58; The `page` attribute in the response of the `/search` endpoint begins with `0`, but the `page` attribute in the response of the `List Resources` endpoint begins with `1`.
       tags: 
         - Search
       parameters:
