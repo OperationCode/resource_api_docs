@@ -60,7 +60,23 @@ paths:
         401:
           $ref: '#/components/responses/Unauthorized'
         422:
-          $ref: '#/components/responses/Invalid'
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example: |
+                {
+                  'apiVersion': '1.0',
+                  'data': null,
+                  'errors': [{
+                      'code': 'unprocessable-entity',
+                      'message': 'Your username or password is incorrect',
+                  }],
+                  'status': 'Unprocessable Entity',
+                  'status_code': 422
+                }
+
   /search:
     get:
       summary: Search
@@ -545,7 +561,26 @@ paths:
         401:
           $ref: '#/components/responses/Unauthorized'
         422:
-          $ref: '#/components/responses/Invalid'
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example: |
+                {
+                  'apiVersion': '1.0',
+                  'data': null,
+                  'errors': [{
+                      'invalid_params': [
+                          'url'
+                      ],
+                      'message': 'This URL already exists in the database. Resource id 135 already has this URL.',
+                      'type': 'validation'
+                  }],
+                  'status': 'Unprocessable Entity',
+                  'status_code': 422
+                }
+
       security:
       - ApiKeyAuth: []
   
@@ -932,28 +967,6 @@ components:
               'status': 'Bad Request',
               'status_code': 400
             } 
-
-    Invalid:
-      description: Invalid request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example: |
-            {
-              'apiVersion': '1.0',
-              'data': null,
-              'errors': [{
-                  'invalid_params': [
-                      'url'
-                  ],
-                  'message': 'This URL already exists in the database. Resource id 135 already has this URL.',
-                  'type': 'validation'
-              }],
-              'status': 'Unprocessable Entity',
-              'status_code': 422
-            } 
-
 
   securitySchemes:
     ApiKeyAuth:
