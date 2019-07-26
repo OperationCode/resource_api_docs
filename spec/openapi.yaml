@@ -59,8 +59,8 @@ paths:
                 }
         401:
           $ref: '#/components/responses/Unauthorized'
-        400:
-          $ref: '#/components/responses/BadRequest'
+        422:
+          $ref: '#/components/responses/Invalid'
   /search:
     get:
       summary: Search
