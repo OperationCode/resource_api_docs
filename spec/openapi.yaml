@@ -353,7 +353,7 @@ paths:
                         'id': 2137,
                         'languages': [],
                         'last_updated': '2019-07-22 16:05:53',
-                        'name': 'Some, but not ALL of the knowledge',
+                        'name': 'Updated Book Title',
                         'notes': null,
                         'paid': false,
                         'times_clicked': 3,
@@ -520,14 +520,14 @@ paths:
                             'created_at': '2019-07-21 15:41:19',
                             'downvotes': 0,
                             'id': 2137,
-                            'languages': [],
+                            'languages': ['CSS'],
                             'last_updated': '2019-07-22 16:05:53',
-                            'name': 'Some, but not ALL of the knowledge',
+                            'name': 'CSS Tutorial',
                             'notes': null,
                             'paid': false,
                             'times_clicked': 3,
                             'upvotes': 1,
-                            'url': 'http://www.test.com'
+                            'url': 'https://www.w3schools.com/css/'
                         },
                         'status': 'ok',
                         'status_code': 200
